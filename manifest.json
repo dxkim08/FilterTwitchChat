@@ -3,7 +3,7 @@
 
     "name": "Filter Twitch Chat",
     "description": "Filter Twitch.tv Chat",
-    "version": "1.2.0",
+    "version": "1.2.1",
 
     "browser_action": {
         "default_icon": "images/icon19.png",

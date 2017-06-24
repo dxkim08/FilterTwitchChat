@@ -10,7 +10,7 @@ if (typeof wordList !== 'undefined') {
                         var message = messageParent.innerHTML;
 
                         for (var i = 0; i < wordList.length; i++) {
-                            if (message.indexOf(wordList[i]) != -1) {
+                            if (message.search(new RegExp(wordList[0], "i")) != -1) {
                                 if (logCheck == true) {
                                     console.log("Destroy ChatNode " + node.id + " : " + message);
                                 }

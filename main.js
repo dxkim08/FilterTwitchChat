@@ -61,11 +61,15 @@ document.addEventListener('DOMContentLoaded', function() {
         bt.setAttribute("class", "btn btn-danger pull-right");
         bt.setAttribute("type", "button");
         bt.addEventListener('click', deleteListItem);
-        bt.innerHTML = "X";
+        
+        var sp = document.createElement("span");
+        sp.setAttribute("class", "glyphicon glyphicon-trash");
+        sp.setAttribute("aria-hidden", "true");
 
         li.innerHTML = wordList[i];
         li.setAttribute("class", "list-group-item clearfix wordItem");
 
+        bt.appendChild(sp);
         li.appendChild(bt);
         ul.appendChild(li);
     }
