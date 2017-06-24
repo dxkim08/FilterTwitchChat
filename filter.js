@@ -21,7 +21,9 @@ if (typeof wordList !== 'undefined') {
                                     messageParnet.style.fontStyle = "italic";
                                     messageParent.style.fontWeight = "bold";
                                 } else {
-                                    node.remove();
+                                    if (message != "<필터링 된 채팅입니다.>") {
+                                        node.remove();
+                                    }
                                 }                                                          
                                 
                                 break;
