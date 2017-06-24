@@ -1,9 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     //데이터 불러오기
     var wordList = JSON.parse(localStorage.getItem("wordList"));
+    var filterCheck = JSON.parse(localStorage.getItem("filterCheck"));
+    var logCheck = JSON.parse(localStorage.getItem("logCheck"));
     
     if (wordList == null) {
         wordList = [];
+    }
+    
+    if (filterCheck == true) {
+        document.getElementById("filterCheck").checked = true;
+    }
+    
+    if (logCheck == true) {
+        document.getElementById("logCheck").checked = true;
     }
     
     for (var i = 0; i < wordList.length; i++) {
@@ -42,10 +52,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         //데이터 저장
         localStorage.removeItem("wordList");
+        localStorage.removeItem("filterCheck");
+        localStorage.removeItem("logCheck");
+        
         localStorage.setItem("wordList", JSON.stringify(wordList));
+        localStorage.setItem("filterCheck", document.getElementById("filterCheck").checked);
+        localStorage.setItem("logCheck", document.getElementById("logCheck").checked);
         
         //실행
-        chrome.tabs.executeScript(null, {code: 'var wordList = ' + JSON.stringify(wordList)}, function() {
+        chrome.tabs.executeScript(null, {code: 'var filterCheck = ' + JSON.stringify(filterCheck) + '; var logCheck = ' + JSON.stringify(logCheck) + '; var wordList = ' + JSON.stringify(wordList)}, function() {
             chrome.tabs.executeScript(null, {file: "filter.js"});
         });
         
