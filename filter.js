@@ -8,11 +8,13 @@ if (typeof wordList !== 'undefined') {
                     try {
                         var messageParent = node.getElementsByClassName('message')[0];
                         var message = messageParent.innerHTML;
+                        var m = message.toLowerCase();
 
-                        for (var i = 0; i < wordList.length; i++) {
-                            if (message.search(new RegExp(wordList[0], "i")) != -1) {
+                        for (var i = 0; i < wordList.length; i++) {  
+                            if (m.indexOf(wordList[i]) != -1) {                            
+                                
                                 if (logCheck == true) {
-                                    console.log("Destroy ChatNode " + node.id + " : " + message);
+                                    console.log("Destroy ChatNode " + node.id + " : " + m);
                                 }
                                 
                                 if (filterCheck == true) {
@@ -24,9 +26,9 @@ if (typeof wordList !== 'undefined') {
                                     if (message != "<필터링 된 채팅입니다.>") {
                                         node.remove();
                                     }
-                                }                                                          
+                                }                                                        
                                 
-                                break;
+                                continue;
                             }
                         }
                     } catch (e) {
