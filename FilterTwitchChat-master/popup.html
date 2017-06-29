@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+		
+		<title>FilterTwitchChat</title>
+		
+		<!-- Scripts -->
+		<script src="js/jquery-2.0.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="main.js"></script>
+        
+		<!-- Cascading Style Sheets -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="css/custom.css" rel="stylesheet" media="screen">
+        
+        <style>
+            .list-group {line-height:30px}
+        </style>
+	</head>
+	
+	<body>        
+		<section>
+            
+            <table width=800>
+                <tr>
+                    <h4 style="text-align: center; padding-top: 5px; margin-bottom: 1px">Twitch.TV 채팅 필터링</h4>
+                    <p style="text-align: center; margin-bottom: 1px">모든 Twitch.TV 생방송, 다시보기에서 사용 가능합니다.</p>
+                    <hr>
+                </tr>
+                <tr>
+                    <table>
+                        <tr>
+                            <td width=800>
+                                <!-- 단어 필터링 -->
+                                <div style="padding:3px">
+                                    <h5 style="text-align: center; margin-top: 0px">특정 단어 필터링</h5>
+
+                                    <div class="input-group" style="margin-bottom:5px">
+                                        <input id ="wordInput" type="text" class="form-control" placeholder="필터링할 단어를 입력하세요.">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button" id="wordAddBtn">추가</button>
+                                        </span>
+                                    </div>
+                                    <ul class="list-group" id="wordList">
+                                        <!-- 리스트 -->
+                                    </ul>
+                                    
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </tr>
+                
+                <tr>
+                    <td>
+                        <center>
+                            <div class="checkbox-inline" style="text-align: center">
+                                <label>
+                                    <input type="checkbox" id="filterCheck" value="" style="text-align: center; display: block;"/>필터링 된 채팅 남기기
+                                </label>
+                            </div>
+                            <br>
+                            <div class="checkbox-inline" style="text-align: center">
+                                <label>
+                                    <input type="checkbox" id="logCheck" value="" style="text-align: center; display: block;"/>크롬 콘솔창에 로그 남기기
+                                </label>
+                            </div>       
+                            <div class="checkbox-inline" style="text-align: center">
+                                <label>
+                                    <input type="checkbox" id="startCheck" value="" style="text-align: center; display: block;"/>다음부터 자동으로 필터링 시작하기
+                                </label>
+                            </div>
+                        </center>
+                    </td>
+                </tr>
+                
+                <hr>
+                
+                <tr>                    
+                    <p id="status" style="text-align: center; margin-bottom:2px">단어를 추가한 후 필터링 시작 버튼을 눌러주세요.<br>체크박스, 설정 역시 저장 버튼을 눌러주셔야 저장됩니다.</p>
+                    
+                    <button class="btn btn-primary btn-block" id="filterStartBtn" style="margin-bottom: 5px">단어 / 설정 저장 및 필터링 시작</button>
+                    
+                    <!-- <button class="btn btn-default btn-block" id="filterStopBtn">필터링 종료</button> -->
+                    
+                    <hr>
+                    <h6 style="text-align: center"><a target="_blank" href="http://github.com/dxkim08/HideTwitchChat/releases/">FilterTwitchChat &nbsp; &nbsp; &nbsp; v_2017.06.27.r1</a><br>2017 VS.K</h6>
+                </tr>
+            </table>
+
+		</section>		
+	</body>
+</html>
