@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("startCheck").checked = true;
         
         var wordListLength = $("#wordList li").length;
-        console.log(wordListLength);
+        console.log("Load List Length : " + wordListLength);
 
         $("#wordList li").each(function(i) {
             var temp =  $(this).contents().filter(function() { 
@@ -87,8 +87,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var startBtn = document.getElementById('filterStartBtn');    
     
     startBtn.addEventListener('click', function() {
+        wordList = [];
+        
         var wordListLength = $("#wordList li").length;
-        console.log(wordListLength);
+        console.log("Filter List Length : " + wordListLength);
 
         $("#wordList li").each(function(i) {
             var temp =  $(this).contents().filter(function() { 
@@ -162,9 +164,22 @@ document.addEventListener('DOMContentLoaded', function() {
         li.appendChild(bt);
         ul.appendChild(li);    
 
-        wordList.push(inputText.value);
+        //wordList.push(inputText.value);
         inputText.value = "";
     });
+    
+    //설문조사
+    var links = document.getElementsByTagName("a");
+    for (var i = 0; i < links.length; i++) {
+        (function () {
+            var ln = links[i];
+            var location = ln.href;
+            ln.onclick = function () {
+                chrome.tabs.create({active: true, url: location});
+            };
+        })();
+    }
+    
 });
 
 function deleteListItem() {
