@@ -1,13 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     //데이터 불러오기
-    var wordList = JSON.parse(localStorage.getItem("wordList"));
+    //var wordList = JSON.parse(localStorage.getItem("wordList"));
     var filterCheck = JSON.parse(localStorage.getItem("filterCheck"));
     var logCheck = JSON.parse(localStorage.getItem("logCheck"));
     var startCheck = JSON.parse(localStorage.getItem("startCheck"));
-    
-    if (wordList == null) {
-        wordList = [];
-    }
+
+    var wordList = [];
     
     if (filterCheck == true) {
         document.getElementById("filterCheck").checked = true;
@@ -17,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("logCheck").checked = true;
     }
     
-    if (startCheck == true) {
+    if (startCheck == true) {       
         document.getElementById("startCheck").checked = true;
         
         var wordListLength = $("#wordList li").length;
@@ -28,7 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             return this.nodeType == 3; 
                         })[0].nodeValue;
 
-            wordList.push(temp);
+            if (wordList.indexOf(temp) == -1) {
+                wordList.push(temp);
+            } else {
+                console.log("중복 단어입니다 : " + temp);
+            }
         });
 
         //데이터 저장
@@ -51,6 +53,13 @@ document.addEventListener('DOMContentLoaded', function() {
         status.innerHTML = "필터링 사용중입니다.<br>종료하려면 새로고침 해주세요.";
     }
     
+    wordList = JSON.parse(localStorage.getItem("wordList"));
+    
+    if (wordList == null) {
+        wordList = [];
+    }
+    
+    //wordList 불러오기
     for (var i = 0; i < wordList.length; i++) {
         var ul = document.getElementById("wordList");
 
@@ -75,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     //필터링 시작
-    wordList = [];
     var startBtn = document.getElementById('filterStartBtn');    
     
     startBtn.addEventListener('click', function() {
@@ -87,7 +95,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             return this.nodeType == 3; 
                         })[0].nodeValue;
 
-            wordList.push(temp);
+            if (wordList.indexOf(temp) == -1) {
+                wordList.push(temp);
+            } else {
+                console.log("중복 단어입니다 : " + temp);
+            }
         });
 
         //데이터 저장
@@ -108,6 +120,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var status = document.getElementById('status');
         status.innerHTML = "필터링 사용중입니다.<br>종료하려면 새로고침 해주세요.";
+        
+        alert("필터링을 시작합니다.\n제대로 작동하지 않으면 새로고침 후 다시 실행해주세요.");
     });
     
     //단어 추가
@@ -119,6 +133,11 @@ document.addEventListener('DOMContentLoaded', function() {
             alert("단어를 입력해주십시오.");
             return false;
         }
+        
+        if (wordList.indexOf(inputText.value) != -1) {
+            alert("이미 존재하는 단어입니다 : " + inputText.value);
+            return false;
+        }        
 
         //리스트 가져오기 
         var ul = document.getElementById("wordList");
@@ -143,6 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
         li.appendChild(bt);
         ul.appendChild(li);    
 
+        wordList.push(inputText.value);
         inputText.value = "";
     });
 });
