@@ -25,10 +25,16 @@ try {
 
                         if (messageColor != null && messageColor != "") {
                             if (messageParent.getAttribute('style').indexOf("color") != -1) {
-                                messageSpan.innerHTML = "[필터링: 색깔 채팅]";
-                                messageSpan.style.color = "black";
-                                messageSpan.style.fontStyle = "italic";
-                                messageSpan.style.fontWeight = "bold";
+
+                                if (checkFilter == true) {
+                                    var id = node.getElementsByClassName("chat-author__display-name")[0].innerHTML;
+                                    node.innerHTML = "[필터링: 색깔 채팅 (" + id + ")]";
+                                    node.style.color = "black";
+                                    node.style.fontStyle = "italic";
+                                    node.style.fontWeight = "bold";
+                                } else {
+                                    node.remove();
+                                }
                                 colored = true;
 
                                 if (checkLog == true) {
@@ -47,15 +53,20 @@ try {
                                 }
                                 
                                 if (checkFilter == true) {
-                                    messageSpan.innerHTML = "[필터링: 금지어]";
-                                    messageSpan.style.color = "black";
-                                    messageSpan.style.fontStyle = "italic";
-                                    messageSpan.style.fontWeight = "bold";
+                                    var id = node.getElementsByClassName("chat-author__display-name")[0].innerHTML;
+
+                                    if (id == undefined)
+                                        break;
+
+                                    node.innerHTML = "[필터링: 금지어 (" + id + ")]";
+                                    node.style.color = "black";
+                                    node.style.fontStyle = "italic";
+                                    node.style.fontWeight = "bold";
                                 } else {
                                     node.remove();
                                 }                                       
                                 
-                                continue;
+                                break;
                             }
                         }
                     }
@@ -79,10 +90,15 @@ try {
 
                         if (messageColor != null && messageColor != "") {
                             if (node.getAttribute('style').indexOf("color") != -1) {
-                                message.innerHTML = "[필터링: 색깔 채팅]";
-                                message.style.color = "black";
-                                message.style.fontStyle = "italic";
-                                message.style.fontWeight = "bold";
+                                if (checkFilter == true) {
+                                    var id = node.getElementsByClassName("chat-author__display-name")[0].innerHTML;
+                                    node.innerHTML = "[필터링: 색깔 채팅 (" + id + ")]";
+                                    node.style.color = "black";
+                                    node.style.fontStyle = "italic";
+                                    node.style.fontWeight = "bold";
+                                } else {
+                                    node.remove();
+                                }
                                 colored = true;
 
                                 if (checkLog == true) {
@@ -101,15 +117,20 @@ try {
                                 }
                                 
                                 if (checkFilter == true) {
-                                    message.innerHTML = "[필터링: 금지어]";
-                                    message.style.color = "black";
-                                    message.style.fontStyle = "italic";
-                                    message.style.fontWeight = "bold";
+                                    var id = node.getElementsByClassName("chat-author__display-name")[0].innerHTML;
+
+                                    if (id == undefined)
+                                        break;
+
+                                    node.innerHTML = "[필터링: 금지어 (" + id + ")]";
+                                    node.style.color = "black";
+                                    node.style.fontStyle = "italic";
+                                    node.style.fontWeight = "bold";
                                 } else {
                                     node.remove();
                                 }                                       
                                 
-                                continue;
+                                break;
                             }
                         }
                     }
