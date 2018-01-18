@@ -1,187 +1,143 @@
+//데이터 로드
+var checkAuto = false;
+var checkColor = false;
+var checkLog = false;
+var checkFilter = false;
+var filterList = null;
+
 document.addEventListener('DOMContentLoaded', function() {
-    //데이터 불러오기
-    //var wordList = JSON.parse(localStorage.getItem("wordList"));
-    var filterCheck = JSON.parse(localStorage.getItem("filterCheck"));
-    var logCheck = JSON.parse(localStorage.getItem("logCheck"));
-    var startCheck = JSON.parse(localStorage.getItem("startCheck"));
+    checkAuto = false;
+    checkColor = JSON.parse(localStorage.getItem('checkColor'));
+    checkLog = JSON.parse(localStorage.getItem('checkLog'));
+    checkFilter = JSON.parse(localStorage.getItem('checkFilter'));
+    filterList = JSON.parse(localStorage.getItem('filterList'));
 
-    var wordList = [];
-    
-    if (filterCheck == true) {
-        document.getElementById("filterCheck").checked = true;
+    if (checkColor) {
+        document.getElementById('checkColor').checked = true;
     }
-    
-    if (logCheck == true) {
-        document.getElementById("logCheck").checked = true;
+
+    if (checkLog) {
+        document.getElementById('checkLog').checked = true;
     }
-    
-    if (startCheck == true) {       
-        document.getElementById("startCheck").checked = true;
-        
-        var wordListLength = $("#wordList li").length;
-        console.log("Load List Length : " + wordListLength);
 
-        $("#wordList li").each(function(i) {
-            var temp =  $(this).contents().filter(function() { 
-                            return this.nodeType == 3; 
-                        })[0].nodeValue;
-
-            if (wordList.indexOf(temp) == -1) {
-                wordList.push(temp);
-            } else {
-                console.log("중복 단어입니다 : " + temp);
-            }
-        });
-
-        //데이터 저장
-        localStorage.removeItem("wordList");
-        localStorage.removeItem("filterCheck");
-        localStorage.removeItem("logCheck");
-        localStorage.removeItem("startCheck");
-
-        localStorage.setItem("wordList", JSON.stringify(wordList));
-        localStorage.setItem("filterCheck", document.getElementById("filterCheck").checked);
-        localStorage.setItem("logCheck", document.getElementById("logCheck").checked);
-        localStorage.setItem("startCheck", document.getElementById("startCheck").checked);
-
-        //실행
-        chrome.tabs.executeScript(null, {code: 'var filterCheck = ' + JSON.stringify(filterCheck) + '; var logCheck = ' + JSON.stringify(logCheck) + '; var wordList = ' + JSON.stringify(wordList)}, function() {
-            chrome.tabs.executeScript(null, {file: "filter.js"});
-        });
-
-        var status = document.getElementById('status');
-        status.innerHTML = "필터링 사용중입니다.<br>종료하려면 새로고침 해주세요.";
+    if (checkFilter) {
+        document.getElementById('checkFilter').checked = true;
     }
-    
-    wordList = JSON.parse(localStorage.getItem("wordList"));
-    
-    if (wordList == null) {
-        wordList = [];
+
+    var btnAddWord = document.getElementById('btnAddWord');
+    btnAddWord.addEventListener('click', AddWord);
+
+    var btnStart = document.getElementById('btnStart');
+    btnStart.addEventListener('click', StartFilter);
+
+    if (filterList == null) {
+        filterList = [];
+    } else {
+        CreateTable();
     }
-    
-    //wordList 불러오기
-    for (var i = 0; i < wordList.length; i++) {
-        var ul = document.getElementById("wordList");
 
-        //새 리스트 항목 생성
-        var li = document.createElement("li");
-        var bt = document.createElement("button");
-
-        bt.setAttribute("class", "btn btn-danger pull-right");
-        bt.setAttribute("type", "button");
-        bt.addEventListener('click', deleteListItem);
-        
-        var sp = document.createElement("span");
-        sp.setAttribute("class", "glyphicon glyphicon-trash");
-        sp.setAttribute("aria-hidden", "true");
-
-        li.innerHTML = wordList[i];
-        li.setAttribute("class", "list-group-item clearfix wordItem");
-
-        bt.appendChild(sp);
-        li.appendChild(bt);
-        ul.appendChild(li);
-    }
-    
-    //필터링 시작
-    var startBtn = document.getElementById('filterStartBtn');    
-    
-    startBtn.addEventListener('click', function() {
-        wordList = [];
-        
-        var wordListLength = $("#wordList li").length;
-        console.log("Filter List Length : " + wordListLength);
-
-        $("#wordList li").each(function(i) {
-            var temp =  $(this).contents().filter(function() { 
-                            return this.nodeType == 3; 
-                        })[0].nodeValue;
-
-            if (wordList.indexOf(temp) == -1) {
-                wordList.push(temp);
-            } else {
-                console.log("중복 단어입니다 : " + temp);
-            }
-        });
-
-        //데이터 저장
-        localStorage.removeItem("wordList");
-        localStorage.removeItem("filterCheck");
-        localStorage.removeItem("logCheck");
-        localStorage.removeItem("startCheck");
-
-        localStorage.setItem("wordList", JSON.stringify(wordList));
-        localStorage.setItem("filterCheck", document.getElementById("filterCheck").checked);
-        localStorage.setItem("logCheck", document.getElementById("logCheck").checked);
-        localStorage.setItem("startCheck", document.getElementById("startCheck").checked);
-
-        //실행
-        chrome.tabs.executeScript(null, {code: 'var filterCheck = ' + JSON.stringify(filterCheck) + '; var logCheck = ' + JSON.stringify(logCheck) + '; var wordList = ' + JSON.stringify(wordList)}, function() {
-            chrome.tabs.executeScript(null, {file: "filter.js"});
-        });
-
-        var status = document.getElementById('status');
-        status.innerHTML = "필터링 사용중입니다.<br>종료하려면 새로고침 해주세요.";
-        
-        alert("필터링을 시작합니다.\n제대로 작동하지 않으면 새로고침 후 다시 실행해주세요.");
-    });
-    
-    //단어 추가
-    var wordAddBtn = document.getElementById('wordAddBtn');    
-    wordAddBtn.addEventListener('click', function() {
-        var inputText = document.getElementById("wordInput");
-    
-        if (inputText.value == "" || inputText.value == null) {
-            alert("단어를 입력해주십시오.");
-            return false;
-        }
-        
-        if (wordList.indexOf(inputText.value) != -1) {
-            alert("이미 존재하는 단어입니다 : " + inputText.value);
-            return false;
-        }        
-
-        //리스트 가져오기 
-        var ul = document.getElementById("wordList");
-
-        //새 리스트 항목 생성
-        var li = document.createElement("li");
-        var bt = document.createElement("button");
-        var sp = document.createElement("span");
-        
-        bt.setAttribute("class", "btn btn-danger pull-right");
-        bt.setAttribute("type", "button");
-        bt.addEventListener('click', deleteListItem);
-        //bt.innerHTML = "X";
-
-        li.innerHTML = inputText.value;
-        li.setAttribute("class", "list-group-item clearfix wordItem");
-
-        sp.setAttribute("class", "glyphicon glyphicon-trash");
-        sp.setAttribute("aria-hidden", "true");
-
-        bt.appendChild(sp);
-        li.appendChild(bt);
-        ul.appendChild(li);    
-
-        //wordList.push(inputText.value);
-        inputText.value = "";
-    });
-    
-    //설문조사
-    var links = document.getElementsByTagName("a");
-    for (var i = 0; i < links.length; i++) {
-        (function () {
-            var ln = links[i];
-            var location = ln.href;
-            ln.onclick = function () {
-                chrome.tabs.create({active: true, url: location});
-            };
-        })();
-    }
-    
+    //if (checkAuto) {
+    //    document.getElementById('checkAuto').checked = true;
+    //    StartFilter();
+    //}
 });
 
-function deleteListItem() {
-   $(this).closest("li").remove();
+function AddWord() {
+    try {
+        var inputBody = document.getElementById('inputBody');
+
+        if (inputBody.value == '' || inputBody.value == null) {
+            alert('단어를 입력해주십시오.');
+            return false;
+        }
+
+        if (filterList.indexOf(inputBody.value) != -1) {
+            alert('이미 존재하는 단어입니다 : ' + inputBody.value);
+            return false;
+        }
+
+        AddTableItem(inputBody.value);
+        filterList.push(inputBody.value);
+        inputBody.value = '';
+    } catch (error) {
+        alert(error);
+    }
+}
+
+function CreateTable() {
+    for (var i = 0; i < filterList.length; i++) {
+        AddTableItem(filterList[i]);
+    }
+}
+
+function AddTableItem(filterWord) {
+    var listBody = document.getElementById('filterListBody');
+
+    var tr = document.createElement('tr');
+    var tdWord = document.createElement('td');
+    var tdDestroy = document.createElement('td');
+    var btDestroy = document.createElement('button');
+    var iDestroy = document.createElement('i');
+
+    try {
+        iDestroy.setAttribute('class', 'fas fa-trash-alt');
+
+        btDestroy.setAttribute('type', 'button');
+        btDestroy.setAttribute('class', 'btn btn-danger btn-sm');
+
+        btDestroy.addEventListener('click', DeleteTableItem);
+        btDestroy.appendChild(iDestroy);
+
+        tdDestroy.setAttribute('class', 'align-middle col-sm-2');
+        tdDestroy.appendChild(btDestroy);
+
+        tdWord.setAttribute('class', 'align-middle col-sm-10');
+        tdWord.innerHTML = filterWord;
+
+        tr.setAttribute('class', 'row');
+        tr.appendChild(tdWord);
+        tr.appendChild(tdDestroy);
+        
+        listBody.appendChild(tr);
+    } catch (error) {
+        alert(error);
+    }
+}
+
+function StartFilter() {
+    //localStorage.removeItem('checkAuto');
+    localStorage.removeItem('checkColor');
+    localStorage.removeItem('checkLog');
+    localStorage.removeItem('checkFilter');
+    localStorage.removeItem('filterList');
+
+    //localStorage.setItem('checkAuto', document.getElementById('checkAuto').checked);
+    localStorage.setItem('checkColor', document.getElementById('checkColor').checked);
+    localStorage.setItem('checkLog', document.getElementById('checkLog').checked);
+    localStorage.setItem('checkFilter', document.getElementById('checkFilter').checked);
+    localStorage.setItem('filterList', JSON.stringify(filterList));
+
+    document.getElementById('status').innerHTML = '필터링 사용중입니다. 종료하려면 새로고침 해주세요.';
+    document.getElementById('status').setAttribute("class", "text-danger");
+
+    //실행
+    chrome.tabs.executeScript(null, {code: 'var checkFilter = ' + JSON.stringify(document.getElementById('checkFilter').checked) + '; var checkColor = ' + JSON.stringify(document.getElementById('checkColor').checked) + '; var checkLog = ' + JSON.stringify(document.getElementById('checkLog').checked) + '; var filterList = ' + JSON.stringify(filterList)}, function() {
+        chrome.tabs.executeScript(null, {file: "filter.js"});
+    });
+}
+
+function DeleteTableItem() {
+    try {        
+        var index = filterList.indexOf($(this).closest('tr').children('td').html());
+
+        if (index != -1) {
+            filterList.splice(index, 1);
+        } else {
+            alert("-1");
+        }
+
+        $(this).closest('tr').remove();
+    } catch (error) {
+        alert(error);
+    }
 }

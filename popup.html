@@ -1,96 +1,93 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-	    <meta charset="utf-8">
-		
-		<title>FilterTwitchChat</title>
-		
-		<!-- Scripts -->
-		<script src="js/jquery-2.0.3.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="main.js"></script>
-        
-		<!-- Cascading Style Sheets -->
-		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-		<link href="css/custom.css" rel="stylesheet" media="screen">
-        
-        <style>
-            .list-group {line-height:30px}
-        </style>
-	</head>
-	
-	<body>        
-		<section>
-            
-            <table width=800>
-                <tr>
-                    <h4 style="text-align: center; padding-top: 5px; margin-bottom: 1px">Twitch.TV 채팅 필터링</h4>
-                    <p style="text-align: center; margin-bottom: 1px">모든 Twitch.TV 생방송, 다시보기에서 사용 가능합니다.</p>
-                    <br>
-                    <p style="text-align:center; color: red; margin-bottom: 1px"><a href="http://dxkim08.blog.me/221042450295">여기</a>에서 원하시는 기능 조사를 진행하고 있습니다.</p>
-                    <hr>
-                </tr>
-                <tr>
-                    <table>
-                        <tr>
-                            <td width=800>
-                                <!-- 단어 필터링 -->
-                                <div style="padding:3px">
-                                    <h5 style="text-align: center; margin-top: 0px">특정 단어 필터링</h5>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
 
-                                    <div class="input-group" style="margin-bottom:5px">
-                                        <input id ="wordInput" type="text" class="form-control" placeholder="필터링할 단어를 입력하세요.">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="button" id="wordAddBtn">추가</button>
-                                        </span>
-                                    </div>
-                                    <ul class="list-group" id="wordList">
-                                        <!-- 리스트 -->
-                                    </ul>
-                                    
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </tr>
-                
-                <tr>
-                    <td>
-                        <center>
-                            <div class="checkbox-inline" style="text-align: center">
-                                <label>
-                                    <input type="checkbox" id="filterCheck" value="" style="text-align: center; display: block;"/>필터링 된 채팅 남기기
-                                </label>
-                            </div>
-                            <br>
-                            <div class="checkbox-inline" style="text-align: center">
-                                <label>
-                                    <input type="checkbox" id="logCheck" value="" style="text-align: center; display: block;"/>크롬 콘솔창에 로그 남기기
-                                </label>
-                            </div>       
-                            <div class="checkbox-inline" style="text-align: center">
-                                <label>
-                                    <input type="checkbox" id="startCheck" value="" style="text-align: center; display: block;"/>다음부터 자동으로 필터링 시작하기
-                                </label>
-                            </div>
-                        </center>
-                    </td>
-                </tr>
-                
-                <hr>
-                
-                <tr>                    
-                    <p id="status" style="text-align: center; margin-bottom:2px">단어를 추가한 후 필터링 시작 버튼을 눌러주세요.<br>체크박스, 설정 역시 저장 버튼을 눌러주셔야 저장됩니다.</p>
-                    
-                    <button class="btn btn-primary btn-block" id="filterStartBtn" style="margin-bottom: 5px">단어 / 설정 저장 및 필터링 시작</button>
-                    
-                    <!-- <button class="btn btn-default btn-block" id="filterStopBtn">필터링 종료</button> -->
-                    
-                    <hr>
-                    <h6 style="text-align: center"><a target="_blank" href="http://github.com/dxkim08/HideTwitchChat/releases/">FilterTwitchChat &nbsp; &nbsp; &nbsp; v_2017.07.02.h2</a><br>2017 VS.K</h6>
-                </tr>
+        <title>Filter Twitch Chat</title>
+
+        <style>
+            @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+            body {
+                font-family: 'Noto Sans KR', sans-serif;
+            }
+
+            td {
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+    <body style="min-width: 600px;">
+        <div class="container-fluid" style="margin: 1rem; width: 95%;">
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <strong>FilterTwitchChat이 업데이트되었습니다!</strong><br>
+                단어 시스템이 변경되어, 다시 단어 등록을 해 주셔야 필터가 정상적으로 작동합니다. 색챗 차단 역시 지원합니다.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-5"><h5>FilterTwitchChat</h5></div>
+                <div class="col-sm-7"><p>v.2018-01-18-r1</p></div>
+            </div>
+
+
+            <table class="table table-striped">
+                <thead>
+                    <tr class="row">
+                        <th class="align-middle col-sm-10">단어</th>
+                        <th class="align-middle col-sm-2">삭제</th>
+                    </tr>  
+                </thead>
+                <tbody id="filterListBody">
+                <!--
+                    <tr class="row">
+                        <td class="align-middle col-sm-10">느그좆느그좆느그좆</td>
+                        <td class="align-middle col-sm-2"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button></td>
+                    </tr>
+                -->
+                </tbody>
             </table>
 
-		</section>		
-	</body>
+            <div class="form-row">
+                <div class="form-group col-sm-12">
+                    <input type="text" class="form-control" id="inputBody" placeholder="여기에 단어를 입력하세요.">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" id="btnAddWord">단어 추가</button>
+
+            <hr>
+
+            <!--
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="checkAuto">
+                    <label class="custom-control-label" for="checkAuto">다음 실행 시 자동으로 필터링을 시작합니다.</label>
+                </div>
+            -->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="checkFilter">
+                <label class="custom-control-label" for="checkFilter">필터링 된 채팅을 삭제하지 않고 남깁니다.</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="checkColor">
+                <label class="custom-control-label" for="checkColor">색깔 채팅을 필터링합니다.</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="checkLog">
+                <label class="custom-control-label" for="checkLog">크롬 콘솔에 로그를 기록합니다.</label>
+            </div>
+
+            <hr>
+            <p style="text-align: center;" id="status">필터링 사용 중이 아닙니다. <strong class="text-danger">트위치 페이지에서 실행 버튼을 눌러주세요!</strong></p>
+            <button type="button" class="btn btn-primary btn-lg btn-block" id="btnStart">단어와 설정을 저장하고 필터링을 시작합니다.</button>
+        </div>
+
+        <script src="js/jquery.js"></script>
+        <script src="js/popper.js"></script>        
+        <script src="js/bootstrap.js"></script>
+        <script src="main.js"></script>
+    </body>
 </html>
